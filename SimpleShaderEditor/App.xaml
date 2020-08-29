@@ -4,6 +4,11 @@
              xmlns:local="clr-namespace:SimpleShaderEditor"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/MyCommandBindings.xaml"/>
+                <ResourceDictionary Source="Resources/TemplateResources.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

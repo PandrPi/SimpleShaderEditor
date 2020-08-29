@@ -1,0 +1,13 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:SimpleShaderEditor.Resources"
+                    xmlns:managers="clr-namespace:SimpleShaderEditor.Managers">
+    <!--<CommandBindingCollection x:Key="WindowCommandBindings">
+        <CommandBinding Command="managers:CommandManager.OpenFile" Executed="DoStuff_Executed" />
+    </CommandBindingCollection>
+    <InputBindingCollection x:Key="WindowKeyBindings">
+        <KeyBinding Command="managers:CommandManager.OpenFile" Key="O" Modifiers="Ctrl"/>
+    </InputBindingCollection>-->
+    
+    
+</ResourceDictionary>

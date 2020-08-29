@@ -6,25 +6,40 @@
         xmlns:local="clr-namespace:SimpleShaderEditor"
         xmlns:shb="clr-namespace:AurelienRibon.Ui.SyntaxHighlightBox;assembly=AurelienRibon.Ui.SyntaxHighlightBox"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Background="#FFD8FFF4" Loaded="Window_Loaded">
+        Title="Simple Shader Editor" Height="450" Width="800" Background="#FFD8FFF4" Loaded="Window_Loaded">
     <Grid>
-        <shb:SyntaxHighlightBox Margin="0,22" Background="White"/>
+        <!--Status Bar-->
         <Border BorderBrush="#FFD8FFF4" BorderThickness="1" Height="22" VerticalAlignment="Bottom">
             <StackPanel Background="#FF929EA8" Orientation="Horizontal">
-                <TextBlock TextWrapping="NoWrap" VerticalAlignment="Center" Text="Done" Margin="3,0,738,0" Foreground="White" FontSize="13"/>
+                <TextBlock x:Name="CompilationProgressBlock" TextWrapping="NoWrap" VerticalAlignment="Center" Text="Done" Margin="3,0,738,0" Foreground="White" FontSize="13"/>
             </StackPanel>
         </Border>
+        
+        <!--Main Menu Control-->
         <Menu Height="22" VerticalAlignment="Top">
             <Menu.Effect>
                 <DropShadowEffect Opacity="0.4" Direction="-90" ShadowDepth="2"/>
             </Menu.Effect>
             <MenuItem Header="File" FontSize="14">
-                <MenuItem Header="_Open" InputGestureText="Ctrl+O" Click="MenuItem_Click"/>
-                <MenuItem Header="Save"/>
-                <MenuItem Header="Save As"/>
+                <MenuItem Header="New" InputGestureText="Ctrl+N" Click="NewTabMenuItem_Click"/>
+                <MenuItem Header="Open" InputGestureText="Ctrl+O" Click="OpenFileMenuItem_Click"/>
+                <MenuItem Header="Save" InputGestureText="Ctrl+S"/>
+                <MenuItem Header="Save As" InputGestureText="Ctrl+Shift+S"/>
             </MenuItem>
             <MenuItem Header="Edit" FontSize="14"/>
-            <MenuItem Header="Build" FontSize="14"/>
+            <MenuItem Header="Build" FontSize="14">
+                <MenuItem Header="Build" InputGestureText="Ctrl+B"/>
+                <MenuItem Header="Build To" InputGestureText="Ctrl+Shift+B"/>
+            </MenuItem>
         </Menu>
+        
+        <!--Editor TabControl-->
+        <TabControl x:Name="EditorTabControl" Margin="0,22">
+            <TabItem Header="Test">
+                <Grid Background="#FFE5E5E5">
+                    <TextBox Text="new\ntest"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>

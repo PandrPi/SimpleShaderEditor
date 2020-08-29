@@ -12,10 +12,15 @@ namespace SimpleShaderEditor.Managers
 	/// </summary>
 	class ConfigManager
 	{
-		public static string AppPath { get; set; } = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-		public static string ConfigFileName { get; set; } = "config.json";
+		public static readonly string AppPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+		public static readonly string ConfigFileName  = "config.json";
+		public static readonly string DialogCanceledMessage = "Dialog box was canceled by user";
+		public static readonly string DefaultShaderCode = "float4 main(float2 uv:TEXCOORD) : COLOR\n{\n\treturn float4(1.0f, 1.0f, 1.0f, 1.0f);\n}";
+		public static readonly string EditorTabDefaultHeader = "New tab";
 
-
+		/// <summary>
+		/// A KeyValue pair to store the config fields
+		/// </summary>
 		private Dictionary<string, dynamic> configFieldsDictionary = new Dictionary<string, dynamic>();
 
 		public ConfigManager()
@@ -30,6 +35,10 @@ namespace SimpleShaderEditor.Managers
 			if (File.Exists(configFileFullPath) == false)
 			{
 				File.WriteAllText(configFileFullPath, JsonConvert.SerializeObject(configFieldsDictionary, Formatting.Indented));
+			}
+			else
+			{
+				// TODO: Load config from file 
 			}
 		}
 	}
