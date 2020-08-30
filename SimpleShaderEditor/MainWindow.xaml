@@ -4,9 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SimpleShaderEditor"
+        xmlns:managers ="clr-namespace:SimpleShaderEditor.Managers"
         xmlns:shb="clr-namespace:AurelienRibon.Ui.SyntaxHighlightBox;assembly=AurelienRibon.Ui.SyntaxHighlightBox"
         mc:Ignorable="d"
         Title="Simple Shader Editor" Height="450" Width="800" Background="#FFD8FFF4" Loaded="Window_Loaded">
+
+    <Window.CommandBindings>
+        <CommandBinding Command="managers:CommandManager.OpenFile" Executed="CloseTabCommand_Executed"/>
+        <CommandBinding Command="managers:CommandManager.SaveFile" Executed="CloseTabCommand_Executed"/>
+        <CommandBinding Command="managers:CommandManager.TabItemClose" Executed="CloseTabCommand_Executed"/>
+    </Window.CommandBindings>
+    
     <Grid>
         <!--Status Bar-->
         <Border BorderBrush="#FFD8FFF4" BorderThickness="1" Height="22" VerticalAlignment="Bottom">
@@ -35,11 +43,19 @@
         
         <!--Editor TabControl-->
         <TabControl x:Name="EditorTabControl" Margin="0,22">
-            <TabItem Header="Test">
-                <Grid Background="#FFE5E5E5">
-                    <TextBox Text="new\ntest"/>
-                </Grid>
-            </TabItem>
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding TabHeader}" Margin="0,0,5,0"/>
+                        <Button Content="r" Command="managers:CommandManager.TabItemClose" CommandParameter="{Binding}" FontFamily="Webdings" Width="16" FontSize="10" BorderBrush="{x:Null}" Background="{x:Null}" BorderThickness="0" />
+                    </StackPanel>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+            <TabControl.ContentTemplate>
+                <DataTemplate>
+                    <shb:SyntaxHighlightBox Text="{Binding ShaderCode}"/>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
         </TabControl>
     </Grid>
 </Window>

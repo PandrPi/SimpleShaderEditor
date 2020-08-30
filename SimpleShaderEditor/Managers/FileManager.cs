@@ -14,19 +14,12 @@ namespace SimpleShaderEditor.Managers
 		/// Shows a OpenFileDialog for the user to select the file to open
 		/// </summary>
 		/// <returns>Selected file path or ConfigManager.DialogCanceledMessage if the selection dialog was canceled by user</returns>
-		public static string GetSelectedFilePathFromDialog()
+		public static string GetSelectedFilePathFromOpenFileDialog()
 		{
 			OpenFileDialog openFileDialog = new OpenFileDialog();
 			openFileDialog.Filter = DialogFilter;
 
-			if (openFileDialog.ShowDialog() == true)
-			{
-				return openFileDialog.FileName;
-			}
-			else
-			{
-				return ConfigManager.DialogCanceledMessage;
-			}
+			return openFileDialog.ShowDialog() == true ? openFileDialog.FileName : ConfigManager.DialogCanceledMessage;
 		}
 
 		/// <summary>

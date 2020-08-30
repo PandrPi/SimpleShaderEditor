@@ -35,9 +35,7 @@ namespace SimpleShaderEditor
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
 			ConfigManager = new ConfigManager();
-			TabManager = new TabManager(EditorTabControl, FindResource("TemplateTabItem") as TabItem);
-
-			Initialize_EditorTabControl();
+			TabManager = new TabManager(EditorTabControl);
 		}
 
 		private void NewTabMenuItem_Click(object sender, RoutedEventArgs e)
@@ -47,6 +45,7 @@ namespace SimpleShaderEditor
 
 		private void OpenFileMenuItem_Click(object sender, RoutedEventArgs e)
 		{
+			LoadScriptFromFile();
 			Console.WriteLine("Open");
 		}
 
@@ -59,31 +58,30 @@ namespace SimpleShaderEditor
 		{
 			Console.WriteLine("Save As");
 		}
+
+		private void CloseTabCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+		{
+			TabManager.RemoveTab((TabInfo)e.Parameter);
+		}
 		#endregion
 
 		// Methods that initialize something or are used in initialization
 		#region InitializationMethods
-		/// <summary>
-		/// Creates new editor tab for each file the user was working on during the previous app session 
-		/// </summary>
-		private void Initialize_EditorTabControl()
-		{
-			TabManager.AddNewDefaultTab();
-			// TODO: Get the list of files opened during the previous app session from the ConfigManager
-		}
-		
+				
 		#endregion
 
 		// Methods that interacts with other classes
 		#region InteractionMethods
 		private void LoadScriptFromFile()
 		{
-			string filePath = FileManager.GetSelectedFilePathFromDialog();
+			string filePath = FileManager.GetSelectedFilePathFromOpenFileDialog();
 
 			// Check if OpenFileDialog was not canceled by the user
 			if (filePath != ConfigManager.DialogCanceledMessage)
 			{
-				// If there is no tab in TabManager that is linked with
+				// If there is no tab in TabManager that is linked with a file path selected from a DialogBox
+				// we should create a new editor tab, otherwise select the existing tab
+				TabManager.AddNewTab(filePath);
 			}
 		}
 		#endregion
