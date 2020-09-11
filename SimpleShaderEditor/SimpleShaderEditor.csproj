@@ -87,6 +87,7 @@
     <Compile Include="Managers\CommandManager.cs" />
     <Compile Include="Managers\CompilationManager.cs" />
     <Compile Include="Managers\ConfigManager.cs" />
+    <Compile Include="Managers\Data\TabInfo.cs" />
     <Compile Include="Managers\FileManager.cs" />
     <Compile Include="Managers\HelpManager.cs" />
     <Compile Include="Managers\TabManager.cs" />
@@ -115,6 +116,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\fxc.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

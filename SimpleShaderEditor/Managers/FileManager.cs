@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using SimpleShaderEditor.Managers.Data;
 using System.IO;
 
 namespace SimpleShaderEditor.Managers
@@ -9,12 +10,13 @@ namespace SimpleShaderEditor.Managers
 	class FileManager
 	{
 		private static readonly string DialogFilter = "HLSL files (*.hlsl)|*.hlsl|Text files (*.txt)|*.txt|All files (*.*)|*.*";
+		private static readonly string DialogTitle = "Select the file to process";
 
 		/// <summary>
-		/// Shows a OpenFileDialog for the user to select the file to open
+		/// Shows the OpenFileDialog, where the user can select the file from which the content will be read.
 		/// </summary>
 		/// <returns>Selected file path or ConfigManager.DialogCanceledMessage if the selection dialog was canceled by user</returns>
-		public static string GetSelectedFilePathFromOpenFileDialog()
+		public static string GetSelectedFilePathFromDialogWindow()
 		{
 			OpenFileDialog openFileDialog = new OpenFileDialog();
 			openFileDialog.Filter = DialogFilter;
@@ -23,18 +25,50 @@ namespace SimpleShaderEditor.Managers
 		}
 
 		/// <summary>
-		/// Shows a SaveFileDialog for the user to select the file to save
+		/// Saves a content directly to the file by a path.
 		/// </summary>
-		/// <param name="textToSave">Text to write to the selected file</param>
-		public static void SaveFile(string textToSave)
+		/// <param name="textToSave">Content to save</param>
+		/// <param name="filePath"></param>
+		public static void SaveFile(string textToSave, string filePath)
 		{
-			SaveFileDialog saveFileDialog = new SaveFileDialog();
-			saveFileDialog.Filter = DialogFilter;
 
-			if (saveFileDialog.ShowDialog() == true)
+		}
+
+		/// <summary>
+		/// Saves data from a TabInfo instance to associated file.
+		/// </summary>
+		/// <param name="dataContext">TabInfo instance from which we get data we need to save</param>
+		/// <param name="showSaveDialog">Determines whether we need to show the SaveFileDialog for selecting a file path</param>
+		public static void SaveFile(TabInfo dataContext, bool showSaveDialog)
+		{
+			if (dataContext.LinkedFilePath == string.Empty || showSaveDialog)
 			{
-				File.WriteAllText(saveFileDialog.FileName, textToSave);
+				SaveFileDialog saveFileDialog = new SaveFileDialog
+				{
+					Title = DialogTitle,
+					Filter = DialogFilter					
+				};
+
+				if (dataContext.LinkedFilePath != string.Empty)
+				{
+					saveFileDialog.InitialDirectory = Path.GetDirectoryName(dataContext.LinkedFilePath);
+					saveFileDialog.FileName = dataContext.LinkedFilePath;
+				}
+
+				if (saveFileDialog.ShowDialog() == true)
+				{
+					dataContext.LinkedFilePath = saveFileDialog.FileName;
+					dataContext.TabHeader = Path.GetFileName(saveFileDialog.FileName);
+				}
+				else
+				{
+					return;
+				}
 			}
+
+			if (dataContext.IsCodeChanged == true || File.Exists(dataContext.LinkedFilePath) == false)
+				File.WriteAllText(dataContext.LinkedFilePath, dataContext.ShaderCode);
+			dataContext.IsCodeChanged = false;
 		}
 	}
 }

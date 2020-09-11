@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 
@@ -17,6 +14,7 @@ namespace SimpleShaderEditor.Managers
 		public static readonly string DialogCanceledMessage = "Dialog box was canceled by user";
 		public static readonly string DefaultShaderCode = "float4 main(float2 uv:TEXCOORD) : COLOR\n{\n\treturn float4(1.0f, 1.0f, 1.0f, 1.0f);\n}";
 		public static readonly string EditorTabDefaultHeader = "New tab";
+		public static readonly string TabChangedTag = "Tab changed";
 
 		/// <summary>
 		/// A KeyValue pair to store the config fields

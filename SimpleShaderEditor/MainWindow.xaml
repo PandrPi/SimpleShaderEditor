@@ -10,10 +10,16 @@
         Title="Simple Shader Editor" Height="450" Width="800" Background="#FFD8FFF4" Loaded="Window_Loaded">
 
     <Window.CommandBindings>
-        <CommandBinding Command="managers:CommandManager.OpenFile" Executed="CloseTabCommand_Executed"/>
-        <CommandBinding Command="managers:CommandManager.SaveFile" Executed="CloseTabCommand_Executed"/>
+        <CommandBinding Command="managers:CommandManager.CompileShader" Executed="CompileShaderCommand_Executed"/>
+        <CommandBinding Command="managers:CommandManager.OpenFile" Executed="OpenFileCommand_Executed"/>
+        <CommandBinding Command="managers:CommandManager.SaveFile" Executed="SaveFileCommand_Executed"/>
         <CommandBinding Command="managers:CommandManager.TabItemClose" Executed="CloseTabCommand_Executed"/>
     </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Command="managers:CommandManager.OpenFile" Key="O" Modifiers="Ctrl"/>
+        <KeyBinding Command="managers:CommandManager.SaveFile" Key="S" Modifiers="Ctrl" CommandParameter="False"/>
+        <KeyBinding Command="managers:CommandManager.SaveFile" Key="S" Modifiers="Ctrl+Shift" CommandParameter="True"/>
+    </Window.InputBindings>
     
     <Grid>
         <!--Status Bar-->
@@ -29,10 +35,10 @@
                 <DropShadowEffect Opacity="0.4" Direction="-90" ShadowDepth="2"/>
             </Menu.Effect>
             <MenuItem Header="File" FontSize="14">
-                <MenuItem Header="New" InputGestureText="Ctrl+N" Click="NewTabMenuItem_Click"/>
-                <MenuItem Header="Open" InputGestureText="Ctrl+O" Click="OpenFileMenuItem_Click"/>
-                <MenuItem Header="Save" InputGestureText="Ctrl+S"/>
-                <MenuItem Header="Save As" InputGestureText="Ctrl+Shift+S"/>
+                <MenuItem Header="New" Click="NewTabMenuItem_Click"/>
+                <MenuItem Header="Open" InputGestureText="Ctrl+O" Command="managers:CommandManager.OpenFile"/>
+                <MenuItem Header="Save" InputGestureText="Ctrl+S" Command="managers:CommandManager.SaveFile" CommandParameter="False"/>
+                <MenuItem Header="Save As" InputGestureText="Ctrl+Shift+S" Command="managers:CommandManager.SaveFile" CommandParameter="True"/>
             </MenuItem>
             <MenuItem Header="Edit" FontSize="14"/>
             <MenuItem Header="Build" FontSize="14">
@@ -40,20 +46,32 @@
                 <MenuItem Header="Build To" InputGestureText="Ctrl+Shift+B"/>
             </MenuItem>
         </Menu>
-        
+
         <!--Editor TabControl-->
         <TabControl x:Name="EditorTabControl" Margin="0,22">
             <TabControl.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock Text="{Binding TabHeader}" Margin="0,0,5,0"/>
-                        <Button Content="r" Command="managers:CommandManager.TabItemClose" CommandParameter="{Binding}" FontFamily="Webdings" Width="16" FontSize="10" BorderBrush="{x:Null}" Background="{x:Null}" BorderThickness="0" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Loaded="EditorHeader_Loaded">
+                        <TextBlock Text="{Binding TabHeader}" VerticalAlignment="Center"/>
+                        <TextBlock VerticalAlignment="Center">
+                            <TextBlock.Style>
+                                <Style>
+                                    <Setter Property="TextBlock.Text" Value=""/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=IsCodeChanged}" Value="True">
+                                            <Setter Property="TextBlock.Text" Value="*"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <Button Content="r" Command="managers:CommandManager.TabItemClose" CommandParameter="{Binding}" VerticalAlignment="Center" FontFamily="Webdings" Width="16" FontSize="10" BorderBrush="{x:Null}" Background="{x:Null}" BorderThickness="0" />
                     </StackPanel>
                 </DataTemplate>
             </TabControl.ItemTemplate>
             <TabControl.ContentTemplate>
                 <DataTemplate>
-                    <shb:SyntaxHighlightBox Text="{Binding ShaderCode}"/>
+                    <shb:SyntaxHighlightBox x:Name="CodeEditorBox" Text="{Binding Path=ShaderCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Loaded="CodeEditorBox_Loaded" TextChanged="CodeEditorBox_TextChanged" DataContextChanged="CodeEditorBox_DataContextChanged"/>
                 </DataTemplate>
             </TabControl.ContentTemplate>
         </TabControl>

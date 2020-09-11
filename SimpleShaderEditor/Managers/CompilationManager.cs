@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
+using System.IO;
 
 namespace SimpleShaderEditor.Managers
 {
@@ -11,6 +8,12 @@ namespace SimpleShaderEditor.Managers
 	/// </summary>
 	class CompilationManager
 	{
+		private static readonly string CompilerFilePath = Path.Combine(ConfigManager.AppPath, "fxc.exe");
+		public static int CompileShader(string shaderFilePath)
+		{
+			Process compilerProcess = Process.Start(CompilerFilePath);
 
+			return 0;
+		}
 	}
 }

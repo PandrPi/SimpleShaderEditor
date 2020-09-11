@@ -5,16 +5,10 @@ namespace SimpleShaderEditor.Managers
 {
 	class CommandManager
 	{
-		public static RoutedCommand OpenFile { get; set; }
-		public static RoutedCommand SaveFile { get; set; }
+		public static RoutedCommand CompileShader { get; set; } = new RoutedCommand();
+		public static RoutedCommand OpenFile { get; set; } = new RoutedCommand();
+		public static RoutedCommand SaveFile { get; set; } = new RoutedCommand();
 
-		public static RoutedCommand TabItemClose { get; set; }
-
-		static CommandManager()
-		{
-			OpenFile = new RoutedCommand("OpenFile", typeof(MenuItem));
-			SaveFile = new RoutedCommand("SaveFile", typeof(MenuItem));
-			TabItemClose = new RoutedCommand("TabItemClose", typeof(Button));
-		}
+		public static RoutedCommand TabItemClose { get; set; } = new RoutedCommand();
 	}
 }
