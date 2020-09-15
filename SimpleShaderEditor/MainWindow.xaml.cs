@@ -4,8 +4,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-
 using AurelienRibon.Ui.SyntaxHighlightBox;
+using WpfColorFontDialog;
 using SimpleShaderEditor.Managers.Data;
 
 namespace SimpleShaderEditor
@@ -19,7 +19,7 @@ namespace SimpleShaderEditor
 		private TabManager TabManager { get; set; }
 
 		public MainWindow()
-		{
+		{			
 			InitializeComponent();
 		}
 
@@ -30,20 +30,28 @@ namespace SimpleShaderEditor
 			TabManager = new TabManager(EditorTabControl);
 		}
 
-		private void NewTabMenuItem_Click(object sender, RoutedEventArgs e)
-		{
-			TabManager.AddNewDefaultTab();
-		}
-
 		private void EditorHeader_Loaded(object sender, RoutedEventArgs e)
 		{
 			TabInfo tabInfo = (TabInfo)(sender as FrameworkElement).DataContext;
 			TabManager.SelectTabItemByInfo(tabInfo);
 		}
 
+		private void NewFileCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+		{
+			TabManager.AddNewDefaultTab();
+		}
+
 		private void OpenFileCommand_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
-			LoadScriptFromFile();
+			string filePath = FileManager.GetSelectedPathOfFileToOpen();
+
+			// Check if OpenFileDialog was not canceled by the user
+			if (filePath != ConfigManager.DialogCanceledMessage)
+			{
+				// If there is no tab in TabManager that is linked with a file path selected from a DialogBox by user
+				// we should create a new editor tab, otherwise select the existing tab
+				TabManager.AddNewTab(filePath);
+			}
 		}
 
 		/// <summary>
@@ -70,9 +78,23 @@ namespace SimpleShaderEditor
 			TabManager.RemoveTab((TabInfo)e.Parameter);
 		}
 
-		private void CompileShaderCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+		private async void CompileShaderCommand_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
-			// TODO: Call compilation method here
+			TabInfo tabData = EditorTabControl.SelectedItem as TabInfo;
+			bool needToShowSavingDialog = Convert.ToBoolean(e.Parameter);
+
+			if (tabData.CompiledFilePath == string.Empty || tabData.CompiledFilePath == null || needToShowSavingDialog == true)
+			{
+				string dialogResult = FileManager.GetSelectedPathOfCompiledFile();
+				if (dialogResult == ConfigManager.DialogCanceledMessage)
+					return;
+
+				tabData.CompiledFilePath = dialogResult;
+			}
+
+			int compilerExitCode = await CompilationManager.CompileShaderAsync(tabData);
+			CompilationProgressBlock.Text = (compilerExitCode == 0) 
+				? CompilationManager.BuildSucceededMessage : CompilationManager.BuildFailedMessage;
 		}
 
 		/// <summary>
@@ -88,27 +110,24 @@ namespace SimpleShaderEditor
 		}
 
 		/// <summary>
-		/// This event is handled when editor text is changed
+		/// This event is handled when editor text is changed.
 		/// </summary>
 		/// <param name="sender">The instance of code editor</param>
 		/// <param name="e"></param>
 		private void CodeEditorBox_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			if (sender != null)
+			var codeEditor = sender as SyntaxHighlightBox;
+			bool isCausedByTabChanging = (string)codeEditor.Tag == ConfigManager.TabChangedTag;
+			if (isCausedByTabChanging == false)
 			{
-				var codeEditor = sender as SyntaxHighlightBox;
-				bool isCausedByTabChanging = (string)codeEditor.Tag == ConfigManager.TabChangedTag;
-				if (isCausedByTabChanging == false)
-				{
-					TabInfo tabDataContext = codeEditor.DataContext as TabInfo;
-					tabDataContext.IsCodeChanged = true;
-				}
-				codeEditor.Tag = null;
+				TabInfo tabDataContext = codeEditor.DataContext as TabInfo;
+				tabDataContext.IsCodeChanged = true;
 			}
+			codeEditor.Tag = null;
 		}
 
 		/// <summary>
-		/// This event is handled when the CodeEditorBox control is loaded to UI
+		/// This event is handled when the CodeEditorBox control is loaded to UI.
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
@@ -117,28 +136,38 @@ namespace SimpleShaderEditor
 			// We need to initialize the CodeEditorBox property(our code editor) with the sender object
 			TabManager.InitializeCodeEditorBox(sender as SyntaxHighlightBox);
 		}
-		#endregion
 
-		// Methods that initialize something or are used in initialization
-		#region InitializationMethods
-
-		#endregion
-
-		// Methods that interacts with other classes
-		#region InteractionMethods
-		private void LoadScriptFromFile()
+		/// <summary>
+		/// This event is handled when user wants to set font settings of the code editor
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void FontSettingsItem_Click(object sender, RoutedEventArgs e)
 		{
-			string filePath = FileManager.GetSelectedFilePathFromDialogWindow();
-
-			// Check if OpenFileDialog was not canceled by the user
-			if (filePath != ConfigManager.DialogCanceledMessage)
+			ColorFontDialog fntDialog = new ColorFontDialog
 			{
-				// If there is no tab in TabManager that is linked with a file path selected from a DialogBox by user
-				// we should create a new editor tab, otherwise select the existing tab
-				TabManager.AddNewTab(filePath);
+				Owner = this,
+				Font = FontInfo.GetControlFont(TabManager.CodeEditorBox)
+			};
+			if (fntDialog.ShowDialog() == true)
+			{
+				FontInfo selectedFont = fntDialog.Font;
+				if (selectedFont != null)
+				{
+					FontInfo.ApplyFont(TabManager.CodeEditorBox, selectedFont);
+				}
 			}
 		}
 
+		/// <summary>
+		/// This event is handled when the application window is closing.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+		{
+			e.Cancel = TabManager.RemoveAllTabs();
+		}
 		#endregion
 	}
 }

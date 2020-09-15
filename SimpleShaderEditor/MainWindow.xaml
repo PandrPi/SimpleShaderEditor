@@ -7,18 +7,22 @@
         xmlns:managers ="clr-namespace:SimpleShaderEditor.Managers"
         xmlns:shb="clr-namespace:AurelienRibon.Ui.SyntaxHighlightBox;assembly=AurelienRibon.Ui.SyntaxHighlightBox"
         mc:Ignorable="d"
-        Title="Simple Shader Editor" Height="450" Width="800" Background="#FFD8FFF4" Loaded="Window_Loaded">
+        Title="Simple Shader Editor" Height="450" Width="800" Background="#FFD8FFF4" Loaded="Window_Loaded" Closing="Window_Closing">
 
     <Window.CommandBindings>
         <CommandBinding Command="managers:CommandManager.CompileShader" Executed="CompileShaderCommand_Executed"/>
+        <CommandBinding Command="managers:CommandManager.NewFile" Executed="NewFileCommand_Executed"/>
         <CommandBinding Command="managers:CommandManager.OpenFile" Executed="OpenFileCommand_Executed"/>
         <CommandBinding Command="managers:CommandManager.SaveFile" Executed="SaveFileCommand_Executed"/>
         <CommandBinding Command="managers:CommandManager.TabItemClose" Executed="CloseTabCommand_Executed"/>
     </Window.CommandBindings>
     <Window.InputBindings>
+        <KeyBinding Command="managers:CommandManager.NewFile" Key="N" Modifiers="Ctrl"/>
         <KeyBinding Command="managers:CommandManager.OpenFile" Key="O" Modifiers="Ctrl"/>
         <KeyBinding Command="managers:CommandManager.SaveFile" Key="S" Modifiers="Ctrl" CommandParameter="False"/>
         <KeyBinding Command="managers:CommandManager.SaveFile" Key="S" Modifiers="Ctrl+Shift" CommandParameter="True"/>
+        <KeyBinding Command="managers:CommandManager.CompileShader" Key="B" Modifiers="Ctrl" CommandParameter="False"/>
+        <KeyBinding Command="managers:CommandManager.CompileShader" Key="B" Modifiers="Ctrl+Shift" CommandParameter="True"/>
     </Window.InputBindings>
     
     <Grid>
@@ -35,20 +39,22 @@
                 <DropShadowEffect Opacity="0.4" Direction="-90" ShadowDepth="2"/>
             </Menu.Effect>
             <MenuItem Header="File" FontSize="14">
-                <MenuItem Header="New" Click="NewTabMenuItem_Click"/>
+                <MenuItem Header="New" InputGestureText="Ctrl+N" Command="managers:CommandManager.NewFile"/>
                 <MenuItem Header="Open" InputGestureText="Ctrl+O" Command="managers:CommandManager.OpenFile"/>
                 <MenuItem Header="Save" InputGestureText="Ctrl+S" Command="managers:CommandManager.SaveFile" CommandParameter="False"/>
                 <MenuItem Header="Save As" InputGestureText="Ctrl+Shift+S" Command="managers:CommandManager.SaveFile" CommandParameter="True"/>
             </MenuItem>
-            <MenuItem Header="Edit" FontSize="14"/>
+            <MenuItem Header="Edit" FontSize="14">
+                <MenuItem Header="Font settings" Click="FontSettingsItem_Click"/>
+            </MenuItem>
             <MenuItem Header="Build" FontSize="14">
-                <MenuItem Header="Build" InputGestureText="Ctrl+B"/>
-                <MenuItem Header="Build To" InputGestureText="Ctrl+Shift+B"/>
+                <MenuItem Header="Build" InputGestureText="Ctrl+B" Command="managers:CommandManager.CompileShader" CommandParameter="False"/>
+                <MenuItem Header="Build To" InputGestureText="Ctrl+Shift+B" Command="managers:CommandManager.CompileShader" CommandParameter="True"/>
             </MenuItem>
         </Menu>
 
         <!--Editor TabControl-->
-        <TabControl x:Name="EditorTabControl" Margin="0,22">
+        <TabControl x:Name="EditorTabControl" Margin="0,22" Background="White">
             <TabControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Loaded="EditorHeader_Loaded">
@@ -71,7 +77,7 @@
             </TabControl.ItemTemplate>
             <TabControl.ContentTemplate>
                 <DataTemplate>
-                    <shb:SyntaxHighlightBox x:Name="CodeEditorBox" Text="{Binding Path=ShaderCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Loaded="CodeEditorBox_Loaded" TextChanged="CodeEditorBox_TextChanged" DataContextChanged="CodeEditorBox_DataContextChanged"/>
+                    <shb:SyntaxHighlightBox x:Name="CodeEditorBox" Text="{Binding Path=ShaderCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" CurrentHighlighter="{x:Static managers:TabManager.Highlighter}" Loaded="CodeEditorBox_Loaded" TextChanged="CodeEditorBox_TextChanged" DataContextChanged="CodeEditorBox_DataContextChanged" FontFamily="Consolas"/>
                 </DataTemplate>
             </TabControl.ContentTemplate>
         </TabControl>

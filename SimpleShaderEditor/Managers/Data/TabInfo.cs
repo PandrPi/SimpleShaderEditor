@@ -7,6 +7,18 @@ namespace SimpleShaderEditor.Managers.Data
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 
+		public string CompiledFilePath
+		{
+			get
+			{
+				return _compiledFilePath;
+			}
+			set
+			{
+				_compiledFilePath = value;
+				OnPropertyChanged();
+			}
+		}
 		public string LinkedFilePath
 		{
 			get
@@ -56,6 +68,7 @@ namespace SimpleShaderEditor.Managers.Data
 			}
 		}
 
+		private string _compiledFilePath = string.Empty;
 		private string _linkedFilePath = string.Empty;
 		private string _shaderCode = string.Empty;
 		private string _tabHeader = string.Empty;

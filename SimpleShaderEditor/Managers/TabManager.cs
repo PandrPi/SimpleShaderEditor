@@ -4,6 +4,8 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Resources;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,8 +14,9 @@ namespace SimpleShaderEditor.Managers
 {
 	class TabManager
 	{
-		public static readonly string CloseTabWithoutSavingBox_Caption = "The changes is not saved!!!";
-		public static readonly string CloseTabWithoutSavingBox_Text = "Do you want to save changes?";
+		public static IHighlighter Highlighter { get; set; } = HighlighterManager.Instance.Highlighters["HLSL"];
+		private static readonly string TabRemovalConfirmationWindow_Caption = "The changes is not saved!";
+		private static readonly string TabRemovalConfirmationWindow_Content = "Do you want to save file '{0}'?";
 
 		public ObservableCollection<TabInfo> TabItemsSource { get; private set; }
 		public SyntaxHighlightBox CodeEditorBox { get; set; }
@@ -45,10 +48,15 @@ namespace SimpleShaderEditor.Managers
 		/// <param name="codeEditorBox"></param>
 		public void InitializeCodeEditorBox(SyntaxHighlightBox codeEditorBox)
 		{
-			CodeEditorBox = codeEditorBox;
+			// It is necessary to null check, because the tab removal causes the CodeEditorBox_Loaded event and this method
+			//to be raised/called again. So when the CodeEditorBox is already initialized we do not need to do initialization again.
+			if (CodeEditorBox == null)
+			{
+				CodeEditorBox = codeEditorBox;				
 
-			// Just remove a temporal element by index 0, because it is useless now
-			TabItemsSource.RemoveAt(0);
+				// Just remove a temporal element by index 0, because it is useless now
+				TabItemsSource.RemoveAt(0);
+			}
 		}
 
 		/// <summary>
@@ -97,6 +105,8 @@ namespace SimpleShaderEditor.Managers
 			}
 		}
 
+
+
 		/// <summary>
 		/// Removes the tab associated with the tabInfo parameter from the source list if the list contains more than 1 item
 		/// </summary>
@@ -105,21 +115,53 @@ namespace SimpleShaderEditor.Managers
 		{
 			if (TabItemsSource.Count == 1)
 				return;
-			
+
+			var windowResult = ShowTabRemovalConfirmationWindow(tabInfo);
+			if (windowResult != MessageBoxResult.Cancel)
+				TabItemsSource.Remove(tabInfo);
+		}
+
+		/// <summary>
+		/// Shows the tab removal confirmation window if the tab has unsaved changes
+		/// </summary>
+		/// <param name="tabInfo"></param>
+		/// <returns></returns>
+		public MessageBoxResult ShowTabRemovalConfirmationWindow(TabInfo tabInfo)
+		{
 			if (tabInfo.IsCodeChanged == true)
 			{
 				var dialogResult = MessageBox.Show(
-					CloseTabWithoutSavingBox_Text, CloseTabWithoutSavingBox_Caption, MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
+					string.Format(TabRemovalConfirmationWindow_Content, Path.GetFileName(tabInfo.LinkedFilePath)),
+					TabRemovalConfirmationWindow_Caption,
+					MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
 
 				if (dialogResult != MessageBoxResult.Cancel)
 				{
 					if (dialogResult == MessageBoxResult.Yes)
 						FileManager.SaveFile(tabInfo, false);
 
-					TabItemsSource.Remove(tabInfo);
+					return dialogResult;
 				}
+				return MessageBoxResult.Cancel;
 			}
-			
+
+			return MessageBoxResult.None;
+		}
+
+		/// <summary>
+		/// Removes each tab from the ItemSource collection. Call this method when the application is closing.
+		/// </summary>
+		/// <returns>Boolean object that determines whether user has canceled the operation</returns>
+		public bool RemoveAllTabs()
+		{
+			foreach (var tabItem in TabItemsSource)
+			{
+				var dialogResult = ShowTabRemovalConfirmationWindow(tabItem);
+				if (dialogResult == MessageBoxResult.Cancel)
+					return true;
+			}
+			TabItemsSource = null;
+			return false;
 		}
 
 		/// <summary>

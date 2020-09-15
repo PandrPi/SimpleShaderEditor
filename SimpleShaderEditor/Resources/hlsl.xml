@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Syntax name="HLSL">
+  <HighlightWordsRule name="Flow-control statements">
+    <Words>
+      break continue discard do for if switch while return
+    </Words>
+    <IgnoreCase>      false    </IgnoreCase>
+    <Foreground>      #0080FF    </Foreground>
+    <FontWeight>      Bold    </FontWeight>
+    <FontStyle>      Normal    </FontStyle>
+  </HighlightWordsRule>
+  <HighlightWordsRule name="Preprocessor directives">
+    <Words>
+      define elif else endif error if ifdef ifndef include line pragma undef
+    </Words>
+    <IgnoreCase>      false    </IgnoreCase>
+    <Foreground>      #FF990202    </Foreground>
+    <FontWeight>      Normal    </FontWeight>
+    <FontStyle>      Italic    </FontStyle>
+  </HighlightWordsRule>
+  <HighlightWordsRule name="Standard types">
+    <Words>
+      float half int uint bool min10float min16float min12int min16int min16uint float1 float2 float3 float4
+      half1 half2 half3 half4 float1x1 float1x2 float1x3 float1x4 float2x1 float2x2 float2x3
+      float2x4 float3x1 float3x2 float3x3 float3x4 float4x1 float4x2 float4x3 float4x4 half1x1
+      half1x2 half1x3 half1x4 half2x1 half2x2 half2x3 half2x4 half3x1 half3x2 half3x3 half3x4 half4x1
+      half4x2 half4x3 half4x4
+    </Words>
+    <IgnoreCase>      false    </IgnoreCase>
+    <Foreground>      #8000FF    </Foreground>
+    <FontWeight>      Bold    </FontWeight>
+    <FontStyle>      Normal    </FontStyle>
+  </HighlightWordsRule>
+  <HighlightWordsRule name="Standard functions">
+    <Words>
+      abort abs acos all AllMemoryBarrier AllMemoryBarrierWithGroupSync any asdouble asfloat asin asint asuint 
+      asuint atan atan2 ceil CheckAccessFullyMapped clamp clip cos cosh countbits cross D3DCOLORtoUBYTE4 
+      ddx ddx_coarse ddx_fine ddy ddy_coarse ddy_fine degrees determinant DeviceMemoryBarrier DeviceMemoryBarrierWithGroupSync 
+      distance dot dst errorf EvaluateAttributeAtCentroid EvaluateAttributeAtSample EvaluateAttributeSnapped exp exp2 
+      f16tof32 f32tof16 faceforward firstbithigh firstbitlow floor fma fmod frac frexp fwidth GetRenderTargetSampleCount 
+      GetRenderTargetSamplePosition GroupMemoryBarrier GroupMemoryBarrierWithGroupSync InterlockedAdd InterlockedAnd 
+      InterlockedCompareExchange InterlockedCompareStore InterlockedExchange InterlockedMax InterlockedMin InterlockedOr 
+      InterlockedXor isfinite isinf isnan ldexp length lerp lit log log10 log2 mad max min modf msad4 mul noise 
+      normalize pow printf Process2DQuadTessFactorsAvg Process2DQuadTessFactorsMax Process2DQuadTessFactorsMin 
+      ProcessIsolineTessFactors ProcessQuadTessFactorsAvg ProcessQuadTessFactorsMax ProcessQuadTessFactorsMin 
+      ProcessTriTessFactorsAvg ProcessTriTessFactorsMax ProcessTriTessFactorsMin radians rcp reflect refract reversebits 
+      round rsqrt saturate sign sin sincos sinh smoothstep sqrt step tan tanh tex1D tex1D
+      tex1Dbias tex1Dgrad tex1Dlod tex1Dproj tex2D tex2Dbias tex2Dgrad tex2Dlod tex2Dproj tex3D tex3Dbias
+      tex3Dgrad tex3Dlod tex3Dproj texCUBE texCUBEbias texCUBEgrad texCUBElod texCUBEproj transpose trunc
+    </Words>
+    <IgnoreCase>      false    </IgnoreCase>
+    <Foreground>      #FF990202    </Foreground>
+    <FontWeight>      Bold    </FontWeight>
+    <FontStyle>      Normal    </FontStyle>
+  </HighlightWordsRule>
+  <HighlightWordsRule name="Standard semantics">
+    <Words>
+      BINORMAL BLENDINDICES BLENDWEIGHT COLOR NORMAL POSITION POSITIONT PSIZE TANGENT TEXCOORD Output COLOR FOG 
+      POSITION PSIZE TESSFACTOR TEXCOORD COLOR TEXCOORD VFACE VPOS Output COLOR DEPTH SV_ClipDistance SV_CullDistance 
+      SV_Coverage SV_Depth SV_DepthGreaterEqual SV_DepthLessEqual SV_DispatchThreadID 
+      SV_DomainLocation SV_GroupID SV_GroupIndex SV_GroupThreadID SV_GSInstanceID SV_InnerCoverage SV_InsideTessFactor 
+      SV_InstanceID SV_IsFrontFace SV_OutputControlPointID SV_Position SV_PrimitiveID SV_RenderTargetArrayIndex SV_SampleIndex 
+      SV_StencilRef SV_Target SV_TessFactor SV_VertexID SV_ViewportArrayIndex
+    </Words>
+    <IgnoreCase>      false    </IgnoreCase>
+    <Foreground>      #FF1DBBD4    </Foreground>
+    <FontWeight>      Bold    </FontWeight>
+    <FontStyle>      Normal    </FontStyle>
+  </HighlightWordsRule>
+  <HighlightLineRule name="Comments">
+    <LineStart>      //    </LineStart>
+    <IgnoreCase>      false    </IgnoreCase>
+    <Foreground>      #009933    </Foreground>
+    <FontWeight>      Normal    </FontWeight>
+    <FontStyle>      Normal    </FontStyle>
+  </HighlightLineRule>
+  <AdvancedHighlightRule name="Numbers">
+    <Expression>      \b([0-9]+[\.]?[0-9]*[f]?)\b    </Expression>
+    <IgnoreCase>      false    </IgnoreCase>
+    <Foreground>      #F68A1B    </Foreground>
+    <FontWeight>      Normal    </FontWeight>
+    <FontStyle>      Normal    </FontStyle>
+  </AdvancedHighlightRule>
+</Syntax>

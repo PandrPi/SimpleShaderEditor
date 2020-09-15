@@ -9,6 +9,7 @@ namespace SimpleShaderEditor.Managers
 	/// </summary>
 	class FileManager
 	{
+		private static readonly string CompilationDialogFilter = "PixelShader files (*.ps)|*.ps|All files (*.*)|*.*";
 		private static readonly string DialogFilter = "HLSL files (*.hlsl)|*.hlsl|Text files (*.txt)|*.txt|All files (*.*)|*.*";
 		private static readonly string DialogTitle = "Select the file to process";
 
@@ -16,7 +17,7 @@ namespace SimpleShaderEditor.Managers
 		/// Shows the OpenFileDialog, where the user can select the file from which the content will be read.
 		/// </summary>
 		/// <returns>Selected file path or ConfigManager.DialogCanceledMessage if the selection dialog was canceled by user</returns>
-		public static string GetSelectedFilePathFromDialogWindow()
+		public static string GetSelectedPathOfFileToOpen()
 		{
 			OpenFileDialog openFileDialog = new OpenFileDialog();
 			openFileDialog.Filter = DialogFilter;
@@ -24,14 +25,12 @@ namespace SimpleShaderEditor.Managers
 			return openFileDialog.ShowDialog() == true ? openFileDialog.FileName : ConfigManager.DialogCanceledMessage;
 		}
 
-		/// <summary>
-		/// Saves a content directly to the file by a path.
-		/// </summary>
-		/// <param name="textToSave">Content to save</param>
-		/// <param name="filePath"></param>
-		public static void SaveFile(string textToSave, string filePath)
+		public static string GetSelectedPathOfCompiledFile()
 		{
+			SaveFileDialog fileDialog = new SaveFileDialog();
+			fileDialog.Filter = CompilationDialogFilter;
 
+			return fileDialog.ShowDialog() == true ? fileDialog.FileName : ConfigManager.DialogCanceledMessage;
 		}
 
 		/// <summary>
